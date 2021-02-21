@@ -24,11 +24,10 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Logan Halsall")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    """Render the website's contact page."""
     myform = MyForm()
 
     if request.method == 'POST':
@@ -38,8 +37,13 @@ def contact():
             subject = myform.subject.data
             message = myform.message.data
 
+            msg = Message(myform.subject.data, sender=(myform.name.data, "logandh@github.com"),recipients=[myform.email.data])
+            msg.body = myform.message.data
+            mail.send(msg)
+
             flash('You have successfully filled out the form', 'success')
-            return render_template('') #, name=name, email=email, message=message
+            return redirect('/')
+
         flash_errors(myform)
     return render_template('contact.html', form=myform)
 
